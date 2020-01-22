@@ -41,7 +41,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   tax[is.na(tax)] <- as.factor("unclassified")
   org_tax <- names(tax)
   names(tax) <- tolower(names(tax))
-  type <- tolower(type)
+  level <- tolower(level)
   tax$OTU <- rownames(tax)
   samp <- data.frame(sample_data(phylo_ob), stringsAsFactors=TRUE)
 
