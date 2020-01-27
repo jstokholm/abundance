@@ -34,7 +34,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   require(phyloseq)
 
   otu_mat <- t(as(otu_table(phylo_ob), "matrix"))
-  otu_mat  <- otu_mat[,colSums(otu_mat)>1] #removes OTUs <1;
+  otu_mat  <- otu_mat[,colSums(otu_mat)>0] #removes empty OTUs;
   OTU_index <- colnames(otu_mat)
   tax <- as(tax_table(phylo_ob), "matrix") %>% data.frame
   tax <- tax[rownames(tax) %in% OTU_index,]
@@ -76,9 +76,8 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   }
   abund$"reads" <- NULL
 
-
   if (!is.null(select_taxa))  {
-    abund <- abund[,colnames(abund) %in% as.character(unique(tax[grep(select_taxa,tax[,select_type]),level])), drop = FALSE]
+    abund <- abund[,colnames(abund) %in% as.character(unique(tax[grep(select_taxa,tax[,select_type],ignore.case=TRUE),level])), drop = FALSE]
     unique_tax <- names(abund)
   }
   if(remove_collapsed_taxa){
