@@ -12,24 +12,24 @@
 #' @param strata_val Value in variable @strata to keep; default is NULL.
 #' @param remove_collapsed_taxa Will remove unclassified taxa which are elsewise merged; default is FALSE.
 #' @param select_taxa Choose all taxa from a Taxonomic variable, eg. "Staphylocuccus" or "Staph" or "cuccus"; default is NULL.
-#' @param select_type Taxonomic rank of the @select_taxa; default is NULL.
+#' @param select_level Taxonomic rank of the @select_taxa; default is NULL.
 #'
 #' @import phyloseq dplyr
 #' @return A data.frame
 #' @export
 # ged <- abundance(phylo_ob=xf_2k_1w_6y_dada2, level="genus", id="Abcno",relative_abun=TRUE,
 #                  strata_val=NULL,remove_collapsed_taxa=FALSE,
-#                  select_taxa=NULL,select_type=NULL)
+#                  select_taxa=NULL,select_level=NULL)
 #
 #
 # ged <- abundance(phylo_ob=xf_2k_1w_6y_dada2, level="genus", id="Abcno",relative_abun=TRUE,
 #                  strata_val="1y",remove_collapsed_taxa=FALSE,
-#                  select_taxa="Enterobacteriaceae",select_type="family")
+#                  select_taxa="Enterobacteriaceae",select_level="family")
 
 
 abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relative_abun=TRUE,
                      strata=NULL,strata_val=NULL,remove_collapsed_taxa=FALSE,
-                     select_taxa=NULL,select_type=NULL) {
+                     select_taxa=NULL,select_level=NULL) {
   require(reshape2)
   require(phyloseq)
 
@@ -77,7 +77,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   abund$"reads" <- NULL
 
   if (!is.null(select_taxa))  {
-    abund <- abund[,colnames(abund) %in% as.character(unique(tax[grep(select_taxa,tax[,select_type],ignore.case=TRUE),level])), drop = FALSE]
+    abund <- abund[,colnames(abund) %in% as.character(unique(tax[grep(select_taxa,tax[,select_level],ignore.case=TRUE),level])), drop = FALSE]
     unique_tax <- names(abund)
   }
   if(remove_collapsed_taxa){

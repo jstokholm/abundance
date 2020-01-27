@@ -14,7 +14,7 @@ abundance(
   strata_val = NULL,
   remove_collapsed_taxa = FALSE,
   select_taxa = NULL,
-  select_type = NULL
+  select_level = NULL
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ abundance(
 
 \item{select_taxa}{Choose all taxa from a Taxonomic variable, eg. "Staphylocuccus" or "Staph" or "cuccus"; default is NULL.}
 
-\item{select_type}{Taxonomic rank of the @select_taxa; default is NULL.}
+\item{select_level}{Taxonomic rank of the @select_taxa; default is NULL.}
 
 \item{predictor}{Predictor of interestfor stastics/plotting in sample_data.}
 }
