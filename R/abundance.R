@@ -30,15 +30,15 @@
 abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relative_abun=TRUE,
                      strata=NULL,strata_val=NULL,remove_collapsed_taxa=FALSE,
                      select_taxa=NULL,select_level=NULL) {
-  require(reshape2)
   require(phyloseq)
 
+  phylo_ob <- prune_samples(sample_sums(phylo_ob) > 0, phylo_ob)
   otu_mat <- t(as(otu_table(phylo_ob), "matrix"))
   otu_mat  <- otu_mat[,colSums(otu_mat)>0] #removes empty OTUs;
   OTU_index <- colnames(otu_mat)
-  tax <- as(tax_table(phylo_ob), "matrix") %>% data.frame
+  tax <- data.frame(as(tax_table(phylo_ob), "matrix"),stringsAsFactors=FALSE)
   tax <- tax[rownames(tax) %in% OTU_index,]
-  tax[is.na(tax)] <- as.factor("unclassified")
+  tax[is.na(tax)] <- "unclassified"
   org_tax <- names(tax)
   names(tax) <- tolower(names(tax))
   level <- tolower(level)
