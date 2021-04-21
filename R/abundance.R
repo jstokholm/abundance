@@ -33,10 +33,11 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   require(phyloseq)
 
   phylo_ob <- prune_samples(sample_sums(phylo_ob) > 0, phylo_ob)
-  otu_mat <- t(as(otu_table(phylo_ob), "matrix"))
+  otu_mat <- as(otu_table(phylo_ob), "matrix")
+    if(taxa_are_rows(phylo_ob)) otu_mat <- t(otu_mat)
   otu_mat  <- otu_mat[,colSums(otu_mat)>0] #removes empty OTUs;
   OTU_index <- colnames(otu_mat)
-  tax <- data.frame(as(tax_table(phylo_ob), "matrix"),stringsAsFactors=FALSE)
+  tax <- as(tax_table(phylo_ob), "matrix") %>% data.frame(stringsAsFactors=FALSE)
   tax <- tax[rownames(tax) %in% OTU_index,]
   tax[is.na(tax)] <- "unclassified"
   org_tax <- names(tax)
@@ -54,9 +55,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
     samp <- samp[rownames(samp) %in% index,]
   }
 
-  #paste(tax$genus,tax$family,"_")
-  list <-as.character(tax[,level])# unlist(lapply(strsplit(as.character(tax[,level]),"_"), function(x) x[[1]]))
-  #list <- gsub("Lachnospiracea", "Lachnospiracea_incertae_sedis", list)
+  list <-as.character(tax[,level])
   unique_tax <- unique(list)
 
   abund <- as.data.frame(matrix(rep(0,(length(unique_tax)*nrow(otu_mat))),ncol=length(unique_tax)))
@@ -68,13 +67,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   }
 
   #Sort by abundance
-  abund$"reads" <- rowSums(abund)
-  if(relative_abun){
-    for(i in names(abund)){
-      abund[,i] <- abund[,i] / abund$"reads"
-    }
-  }
-  abund$"reads" <- NULL
+  if(relative_abun) abund <- apply(abund,1,function(x) x/sum(x)) %>% t %>% as.data.frame()
 
   if (!is.null(select_taxa))  {
     abund <- abund[,colnames(abund) %in% as.character(unique(tax[grep(select_taxa,tax[,select_level],ignore.case=TRUE),level])), drop = FALSE]
