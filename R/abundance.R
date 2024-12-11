@@ -38,7 +38,7 @@ abundance<- function(phylo_ob, level="genus", id="abcno",sample_id="Time",relati
   otu_mat  <- otu_mat[,colSums(otu_mat)>0] #removes empty OTUs;
   OTU_index <- colnames(otu_mat)
   tax <- as(tax_table(phylo_ob), "matrix") %>% data.frame(stringsAsFactors=FALSE)
-  tax <- tax[rownames(tax) %in% OTU_index,]
+  tax <- tax[rownames(tax) %in% OTU_index,,drop=FALSE]
   tax[is.na(tax)] <- "unclassified"
   tax[tax==""] <- "unclassified"
   org_tax <- names(tax)
